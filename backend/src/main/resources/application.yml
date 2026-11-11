@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: asistencia-backend
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 20MB
+  datasource:
+    url: "${DB_URL:jdbc:postgresql://localhost:5432/asistencia_escolar}"
+    username: "${DB_USERNAME:asistencia}"
+    password: "${DB_PASSWORD:asistencia}"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      # 'update' es cómodo para desarrollo. Para producción usa migraciones (Flyway/Liquibase)
+      # y cambia esto a 'validate'.
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: America/Mexico_City
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+    show-sql: false
+
+escuela:
+  nombre: "Secundaria Frida Kahlo"
+  ciclo-escolar: "2026-2027"
+
+cors:
+  origenes-permitidos: "http://localhost:4200"
+
+jwt:
+  # Clave secreta de desarrollo. En producción, defínela con la variable de entorno JWT_SECRET.
+  secreto: "${JWT_SECRET:cambia-esta-clave-super-secreta-para-produccion-1234567890}"
+  expiracion-minutos: 480
+
+app:
+  seed-data: "${SEED_DATA:true}"
+
+logging:
+  level:
+    mx.edu.secundaria.asistencia: INFO

@@ -1,0 +1,61 @@
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else if (group(); as current) {
+  <section class="topbar">
+    <div>
+      <p class="eyebrow">Pase de lista</p>
+      <h1>{{ current.name }}</h1>
+      <p>{{ current.teacherName }} · {{ current.studentCount }} alumnos</p>
+    </div>
+    <mat-form-field appearance="outline" class="date-field">
+      <mat-label>Fecha</mat-label>
+      <input matInput [matDatepicker]="picker" [ngModel]="selectedDate()" (dateChange)="onDateChange($event.value)" />
+      <mat-datepicker-toggle matIconSuffix [for]="picker" />
+      <mat-datepicker #picker />
+    </mat-form-field>
+  </section>
+
+  @if (existing()) {
+    <p class="banner">Ya existe asistencia para este grupo y fecha. Puedes modificarla y volver a guardar.</p>
+  }
+
+  <div class="summary">
+    <span>Presentes {{ summary().presents }}</span>
+    <span>Faltas {{ summary().absences }}</span>
+    <span>Justificadas {{ summary().justified }}</span>
+    <span>Retardos {{ summary().lates }}</span>
+    <span [class.warn]="summary().unmarked > 0">Sin marcar {{ summary().unmarked }}</span>
+  </div>
+
+  <div class="toolbar">
+    <button matButton="tonal" type="button" (click)="markAllPresent()">Marcar todos presentes</button>
+    <button matButton="filled" type="button" (click)="save()" [disabled]="saving()">
+      {{ saving() ? 'Guardando...' : 'Guardar asistencia' }}
+    </button>
+  </div>
+
+  <div class="list">
+    @for (student of students(); track student.id; let i = $index) {
+      <article class="row">
+        <div class="name">
+          <span class="num">{{ i + 1 }}</span>
+          <strong>{{ student.fullName }}</strong>
+        </div>
+        <div class="buttons">
+          @for (option of options; track option.value) {
+            <button
+              type="button"
+              class="status-btn"
+              [attr.data-status]="option.value"
+              [class.selected]="statuses()[student.id] === option.value"
+              (click)="setStatus(student.id, option.value)"
+            >
+              <span class="short">{{ option.short }}</span>
+              <span class="label">{{ option.label }}</span>
+            </button>
+          }
+        </div>
+      </article>
+    }
+  </div>
+}

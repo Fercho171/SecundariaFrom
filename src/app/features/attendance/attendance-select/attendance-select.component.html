@@ -1,0 +1,26 @@
+<app-page-header
+  eyebrow="Flujo principal"
+  title="Seleccionar grupo"
+  subtitle="Elige el grupo para pasar lista."
+/>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else if (!groups().length) {
+  <app-empty-state
+    title="Sin grupos"
+    message="No hay grupos disponibles para pasar lista."
+    icon="groups"
+  />
+} @else {
+  <div class="grid">
+    @for (group of groups(); track group.id) {
+      <a class="card" [routerLink]="['/attendance', group.id]">
+        <h2>{{ group.name }}</h2>
+        <p>{{ group.studentCount }} alumnos</p>
+        <p>{{ group.teacherName }}</p>
+        <span class="cta">Pasar lista</span>
+      </a>
+    }
+  </div>
+}

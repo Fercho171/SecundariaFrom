@@ -1,0 +1,21 @@
+<mat-toolbar class="header">
+  <button matIconButton type="button" aria-label="Abrir menú" (click)="menuToggle.emit()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <div class="brand">
+    <span class="mark" aria-hidden="true">FK</span>
+    <div>
+      <strong>Asistencia</strong>
+      <small>{{ schoolName }}</small>
+    </div>
+  </div>
+  <span class="spacer"></span>
+  @if (connectivity.offline()) {
+    <span class="offline">Sin conexión</span>
+  }
+  <span class="user">{{ user()?.fullName }}</span>
+  <button matButton type="button" (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    Cerrar sesión
+  </button>
+</mat-toolbar>

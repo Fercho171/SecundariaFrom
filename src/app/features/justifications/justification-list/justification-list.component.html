@@ -1,0 +1,26 @@
+<app-page-header title="Justificaciones" subtitle="Registra un justificante con foto o documento.">
+  <a matButton="filled" routerLink="/justifications/new">
+    <mat-icon>add</mat-icon>
+    Nueva justificación
+  </a>
+</app-page-header>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else if (!justifications().length) {
+  <app-empty-state title="Sin justificaciones" message="Aún no hay registros." icon="assignment" />
+} @else {
+  <div class="cards">
+    @for (item of justifications(); track item.id) {
+      <article class="card">
+        <h3>{{ item.studentName }}</h3>
+        <p>{{ item.groupName }} · {{ item.date | date: 'd MMM y' }}</p>
+        <p class="reason">{{ item.reasonLabel }}</p>
+        <p>{{ item.notes }}</p>
+        @if (item.fileName) {
+          <p class="file">Adjunto: {{ item.fileName }}</p>
+        }
+      </article>
+    }
+  </div>
+}

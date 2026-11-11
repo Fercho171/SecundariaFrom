@@ -1,0 +1,58 @@
+<app-page-header
+  title="Faltantes de profesores"
+  subtitle="Docentes ausentes por día, con grupos y horas afectadas."
+/>
+
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Fecha</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      [value]="selectedDate()"
+      (dateChange)="onDateChange($event.value)"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+    <mat-datepicker #picker />
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else {
+  <section class="stats">
+    <app-stat-card label="Faltantes del día" [value]="absences().length" icon="person_off" tone="danger" />
+    <app-stat-card
+      label="Con suplencia"
+      [value]="coveredCount()"
+      icon="diversity_3"
+      tone="info"
+    />
+  </section>
+
+  @if (!absences().length) {
+    <app-empty-state
+      title="Sin faltantes"
+      message="No hay profesores ausentes en la fecha seleccionada."
+      icon="verified"
+    />
+  } @else {
+    <div class="cards">
+      @for (item of absences(); track item.id) {
+        <article class="card">
+          <div class="top">
+            <h3>{{ item.teacherName }}</h3>
+            <span>{{ item.date | date: 'd MMM y' }} · {{ weekdayLabel(item.weekday) }}</span>
+          </div>
+          <p><strong>Motivo:</strong> {{ item.reason }}</p>
+          <p><strong>Horas afectadas:</strong> {{ item.affectedPeriods.join(', ') }}ª</p>
+          <p><strong>Grupos:</strong> {{ item.affectedGroups.join(', ') || 'Sin clases programadas' }}</p>
+          <p>
+            <strong>Suplencia:</strong>
+            {{ item.coveredBy || 'Pendiente de asignar' }}
+          </p>
+        </article>
+      }
+    </div>
+  }
+}

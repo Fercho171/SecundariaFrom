@@ -1,0 +1,64 @@
+<app-page-header
+  title="Horario de clases"
+  subtitle="Consulta las clases por día y grupo."
+/>
+
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Día</mat-label>
+    <mat-select [value]="selectedWeekday()" (valueChange)="onWeekdayChange($event)">
+      @for (day of weekdays; track day.value) {
+        <mat-option [value]="day.value">{{ day.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Grupo</mat-label>
+    <mat-select [value]="selectedGroupId()" (valueChange)="onGroupChange($event)">
+      <mat-option value="">Todos</mat-option>
+      @for (group of groups(); track group.id) {
+        <mat-option [value]="group.id">{{ group.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else {
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Hora</th>
+          @for (group of visibleGroups(); track group.id) {
+            <th>{{ group.name }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of grid(); track row.period.id) {
+          <tr>
+            <td class="time">
+              <strong>{{ row.period.label }}</strong>
+              <span>{{ row.period.startTime }}-{{ row.period.endTime }}</span>
+            </td>
+            @for (cell of row.cells; track cell.group.id) {
+              <td>
+                @if (cell.slot; as slot) {
+                  <div class="slot">
+                    <strong>{{ slot.subject }}</strong>
+                    <span>{{ slot.teacherName }}</span>
+                    <small>{{ slot.classroom }}</small>
+                  </div>
+                } @else {
+                  <span class="empty">Libre</span>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

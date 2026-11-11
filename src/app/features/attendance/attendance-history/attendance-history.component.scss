@@ -1,0 +1,17 @@
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+.filters button { min-height: 56px; }
+.table-wrap {
+  background: #fff;
+  border-radius: 20px;
+  overflow: auto;
+  box-shadow: var(--school-shadow);
+}
+table { width: 100%; }
+tr.mat-mdc-row { min-height: 52px; }
+.loading { display: grid; place-items: center; min-height: 160px; }

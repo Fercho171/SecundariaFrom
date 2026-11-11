@@ -1,0 +1,36 @@
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else if (student(); as current) {
+  <app-page-header [title]="current.fullName" [subtitle]="current.groupName + ' · Ciclo ' + current.schoolYear">
+    <a matButton="outlined" routerLink="/students">Volver al listado</a>
+  </app-page-header>
+
+  <section class="stats">
+    <app-stat-card label="Asistencias" [value]="current.presents" icon="check_circle" tone="success" />
+    <app-stat-card label="Faltas" [value]="current.absences" icon="person_off" tone="danger" />
+    <app-stat-card label="Justificadas" [value]="current.justified" icon="assignment_turned_in" tone="info" />
+    <app-stat-card label="Retardos" [value]="current.lates" icon="schedule" tone="warning" />
+    <app-stat-card
+      label="Porcentaje"
+      [value]="(current.attendancePercentage | number: '1.1-1') + '%'"
+      icon="percent"
+    />
+  </section>
+
+  <section class="panel">
+    <h2>Gráfica mensual de asistencia</h2>
+    <app-attendance-chart [points]="current.monthlyAttendance" />
+  </section>
+
+  <section class="panel">
+    <h2>Historial por fecha</h2>
+    <div class="history">
+      @for (day of current.history.slice(0, 30); track day.date) {
+        <div class="row">
+          <span>{{ day.date | date: 'd MMM y' }}</span>
+          <app-status-badge [status]="day.status" />
+        </div>
+      }
+    </div>
+  </section>
+}

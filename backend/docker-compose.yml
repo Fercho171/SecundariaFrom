@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: asistencia-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: asistencia_escolar
+      POSTGRES_USER: asistencia
+      POSTGRES_PASSWORD: asistencia
+    ports:
+      - "5432:5432"
+    volumes:
+      - asistencia_pgdata:/var/lib/postgresql/data
+
+volumes:
+  asistencia_pgdata:

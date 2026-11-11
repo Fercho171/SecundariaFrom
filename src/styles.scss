@@ -1,0 +1,74 @@
+@use '@angular/material' as mat;
+
+:root {
+  --school-navy: #0f3d4c;
+  --school-teal: #1a7a62;
+  --school-gold: #d4a017;
+  --school-paper: #eef4f2;
+  --school-muted: #5b6f6a;
+  --school-shadow: 0 8px 24px rgba(15, 61, 76, 0.08);
+}
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$cyan-palette,
+      tertiary: mat.$green-palette,
+    ),
+    typography: Roboto,
+    density: -1,
+  ));
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color-scheme: light;
+  background-color: var(--school-paper);
+  color: var(--school-navy);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.snack-success {
+  --mat-snackbar-container-color: #1a7a62;
+  --mat-snackbar-supporting-text-color: #fff;
+}
+
+.snack-error {
+  --mat-snackbar-container-color: #c62828;
+  --mat-snackbar-supporting-text-color: #fff;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+button.mat-mdc-button-base,
+a.mat-mdc-button-base {
+  min-height: 48px;
+}

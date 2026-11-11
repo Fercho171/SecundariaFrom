@@ -1,0 +1,22 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.panel {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.1rem;
+  box-shadow: var(--school-shadow);
+  margin-bottom: 1rem;
+}
+.panel h2 { margin: 0 0 1rem; font-size: 1.1rem; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  border-bottom: 1px solid #eef2f1;
+}
+.loading { display: grid; place-items: center; min-height: 180px; }

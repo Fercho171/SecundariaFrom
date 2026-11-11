@@ -1,0 +1,17 @@
+.filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.8rem;
+}
+.table-wrap {
+  background: #fff;
+  border-radius: 20px;
+  overflow: auto;
+  box-shadow: var(--school-shadow);
+}
+.table { width: 100%; }
+tr.mat-mdc-row { cursor: pointer; min-height: 56px; }
+.loading { display: grid; place-items: center; min-height: 180px; }
+@media (max-width: 800px) {
+  .filters { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,49 @@
+<app-page-header
+  title="Horas de trabajo"
+  subtitle="Horas contratadas, carga semanal y faltas del mes por docente."
+/>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else {
+  <section class="stats">
+    <app-stat-card label="Horas contratadas" [value]="totalContracted()" icon="work_history" />
+    <app-stat-card label="Horas de clase / semana" [value]="totalWeekly()" icon="schedule" tone="info" />
+    <app-stat-card label="Docentes" [value]="rows().length" icon="badge" tone="success" />
+  </section>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Docente</th>
+          <th>Materia</th>
+          <th>Contratadas</th>
+          <th>Clase / semana</th>
+          <th>Promedio diario</th>
+          <th>Trabajadas semana</th>
+          <th>Faltas mes</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.teacherId) {
+          <tr [class.highlight]="row.teacherId === 't4'">
+            <td>
+              <strong>{{ row.teacherName }}</strong>
+            </td>
+            <td>{{ row.subject }}</td>
+            <td>{{ row.contractedHours }} h</td>
+            <td>{{ row.weeklyClassHours }} h</td>
+            <td>{{ row.dailyAverageHours | number: '1.1-1' }} h</td>
+            <td>{{ row.workedHoursThisWeek }} h</td>
+            <td>
+              <span class="badge" [class.warn]="row.absencesThisMonth > 0">
+                {{ row.absencesThisMonth }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

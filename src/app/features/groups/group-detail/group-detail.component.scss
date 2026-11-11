@@ -1,0 +1,32 @@
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.facts article {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: var(--school-shadow);
+}
+.facts span { color: var(--school-muted); display: block; }
+.facts strong { font-size: 1.15rem; }
+.panel {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1rem 1.1rem;
+  box-shadow: var(--school-shadow);
+}
+ol { list-style: none; margin: 0; padding: 0; }
+li a {
+  display: flex;
+  justify-content: space-between;
+  min-height: 52px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid #eef2f1;
+}
+.pct { color: var(--school-teal); font-weight: 700; }
+.loading { display: grid; place-items: center; min-height: 180px; }

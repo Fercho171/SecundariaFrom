@@ -1,0 +1,54 @@
+<app-page-header title="Nueva justificación" subtitle="Completa los datos y, si lo necesitas, adjunta una foto o documento.">
+  <a matButton routerLink="/justifications">Cancelar</a>
+</app-page-header>
+
+<form class="form" [formGroup]="form" (ngSubmit)="submit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Alumno</mat-label>
+    <mat-select formControlName="studentId">
+      @for (student of students(); track student.id) {
+        <mat-option [value]="student.id">{{ student.fullName }} · {{ student.groupName }}</mat-option>
+      }
+    </mat-select>
+    @if (form.controls.studentId.hasError('required')) {
+      <mat-error>Selecciona un alumno.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Fecha</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="date" />
+    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+    <mat-datepicker #picker />
+    @if (form.controls.date.hasError('required')) {
+      <mat-error>Selecciona la fecha.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Motivo</mat-label>
+    <mat-select formControlName="reason">
+      @for (reason of reasons; track reason.value) {
+        <mat-option [value]="reason.value">{{ reason.label }}</mat-option>
+      }
+    </mat-select>
+    @if (form.controls.reason.hasError('required')) {
+      <mat-error>Selecciona un motivo.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Observaciones</mat-label>
+    <textarea matInput rows="4" formControlName="notes"></textarea>
+  </mat-form-field>
+
+  <label class="file">
+    <span>Documento o fotografía</span>
+    <input type="file" accept="image/*,.pdf" (change)="onFile($event)" />
+    <small>{{ fileName() || 'Toma una foto o elige un archivo desde la tableta.' }}</small>
+  </label>
+
+  <button matButton="filled" type="submit" [disabled]="loading()">
+    {{ loading() ? 'Guardando...' : 'Registrar justificación' }}
+  </button>
+</form>

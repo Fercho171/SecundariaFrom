@@ -1,0 +1,29 @@
+<app-page-header
+  title="Alumnos en seguimiento"
+  subtitle="3-4 faltas: Atención · 5-7: Alerta · 8 o más: Riesgo"
+/>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else if (!students().length) {
+  <app-empty-state title="Sin alertas" message="No hay alumnos en situación de seguimiento." icon="verified" />
+} @else {
+  <div class="table">
+    <div class="head">
+      <span>Nombre</span>
+      <span>Grupo</span>
+      <span>Faltas</span>
+      <span>Porcentaje</span>
+      <span>Nivel</span>
+    </div>
+    @for (student of students(); track student.studentId) {
+      <a class="row" [routerLink]="['/students', student.studentId]">
+        <strong>{{ student.studentName }}</strong>
+        <span>{{ student.groupName }}</span>
+        <span>{{ student.absences }}</span>
+        <span>{{ student.attendancePercentage | number: '1.1-1' }}%</span>
+        <span class="level" [attr.data-level]="student.level">{{ student.level | alertLevel }}</span>
+      </a>
+    }
+  </div>
+}

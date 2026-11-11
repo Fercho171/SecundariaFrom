@@ -1,0 +1,15 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
+}
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: var(--school-shadow);
+}
+.card h3 { margin: 0 0 0.3rem; }
+.card p { margin: 0.2rem 0; color: var(--school-muted); }
+.reason { color: var(--school-teal) !important; font-weight: 700; }
+.loading { display: grid; place-items: center; min-height: 160px; }

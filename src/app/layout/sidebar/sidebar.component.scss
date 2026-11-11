@@ -1,0 +1,24 @@
+.sidebar {
+  padding: 1rem 0.6rem;
+}
+
+.section {
+  margin: 0 0.85rem 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--school-muted);
+  font-weight: 700;
+}
+
+a.active {
+  background: #e7f3f0;
+  color: var(--school-teal);
+  border-radius: 12px;
+}
+
+a {
+  min-height: 48px;
+  margin-bottom: 0.2rem;
+  border-radius: 12px;
+}

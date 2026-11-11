@@ -1,0 +1,71 @@
+<app-page-header
+  eyebrow="Hoy en la escuela"
+  title="Tablero de asistencia"
+  subtitle="Resumen del día para pasar lista con rapidez."
+>
+  <a matButton="filled" routerLink="/attendance">
+    <mat-icon>fact_check</mat-icon>
+    Pasar lista
+  </a>
+</app-page-header>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else if (dashboard(); as data) {
+  <section class="stats">
+    <app-stat-card label="Total alumnos" [value]="data.totalStudents" icon="school" />
+    <app-stat-card label="Total grupos" [value]="data.totalGroups" icon="groups" />
+    <app-stat-card
+      label="Asistencia hoy"
+      [value]="(data.todayAttendancePercentage | number: '1.1-1') + '%'"
+      icon="verified"
+      tone="success"
+    />
+    <app-stat-card label="Faltas" [value]="data.todayAbsences" icon="person_off" tone="danger" />
+    <app-stat-card label="Justificadas" [value]="data.todayJustified" icon="assignment_turned_in" tone="info" />
+    <app-stat-card label="Retardos" [value]="data.todayLates" icon="schedule" tone="warning" />
+  </section>
+
+  <div class="panels">
+    <section class="panel">
+      <h2>Asistencia por grupo</h2>
+      <div class="groups">
+        @for (group of data.groupAttendance; track group.groupId) {
+          <a class="group-row" [routerLink]="['/attendance', group.groupId]">
+            <div>
+              <strong>{{ group.groupName }}</strong>
+              <span>{{ group.total }} alumnos</span>
+            </div>
+            <div class="pct" [class.pending]="group.unmarked > 0">
+              @if (group.unmarked > 0) {
+                Pendiente
+              } @else {
+                {{ group.percentage | number: '1.0-0' }}%
+              }
+            </div>
+          </a>
+        }
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Alumnos en situación de alerta</h2>
+      @if (!data.alertStudents.length) {
+        <p class="muted">No hay alumnos en seguimiento.</p>
+      } @else {
+        <div class="alerts">
+          @for (student of data.alertStudents.slice(0, 6); track student.studentId) {
+            <a class="alert-row" [routerLink]="['/students', student.studentId]">
+              <div>
+                <strong>{{ student.studentName }}</strong>
+                <span>{{ student.groupName }} · {{ student.absences }} faltas</span>
+              </div>
+              <span class="level" [attr.data-level]="student.level">{{ student.level | alertLevel }}</span>
+            </a>
+          }
+        </div>
+        <a matButton routerLink="/alerts">Ver seguimiento completo</a>
+      }
+    </section>
+  </div>
+}

@@ -1,0 +1,26 @@
+.form {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 20px;
+  box-shadow: var(--school-shadow);
+}
+.file {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.4rem 0 1rem;
+  font-weight: 600;
+}
+.file input {
+  min-height: 56px;
+  padding: 0.8rem;
+  border: 2px dashed #c5d5d1;
+  border-radius: 14px;
+  background: #f7fbfa;
+}
+.file small { font-weight: 400; color: var(--school-muted); }
+button[type='submit'] { min-height: 56px; }

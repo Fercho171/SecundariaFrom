@@ -1,0 +1,29 @@
+<app-page-header
+  title="Grupos"
+  subtitle="Selecciona un grupo para consultar alumnos o pasar lista."
+/>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else {
+  @for (grade of [1, 2, 3]; track grade) {
+    <section class="grade">
+      <h2>{{ grade }}°</h2>
+      <div class="grid">
+        @for (group of byGrade(grade); track group.id) {
+          <article class="card">
+            <div>
+              <h3>{{ group.name }}</h3>
+              <p>{{ group.studentCount }} alumnos</p>
+              <p class="teacher">{{ group.teacherName }}</p>
+            </div>
+            <div class="actions">
+              <a matButton="outlined" [routerLink]="['/groups', group.id]">Ver grupo</a>
+              <a matButton="filled" [routerLink]="['/attendance', group.id]">Pasar lista</a>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+}

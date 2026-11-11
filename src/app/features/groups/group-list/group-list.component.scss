@@ -1,0 +1,28 @@
+.grade { margin-bottom: 1.5rem; }
+.grade h2 { margin: 0 0 0.8rem; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+}
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.1rem;
+  box-shadow: var(--school-shadow);
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card h3 { margin: 0; font-size: 1.6rem; }
+.card p { margin: 0.25rem 0 0; color: var(--school-muted); }
+.teacher { font-weight: 600; color: var(--school-navy) !important; }
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.actions a { min-height: 48px; flex: 1; }
+.loading { display: grid; place-items: center; min-height: 180px; }

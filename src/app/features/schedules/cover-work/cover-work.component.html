@@ -1,0 +1,132 @@
+<app-page-header
+  title="Trabajos sin maestro"
+  subtitle="Carga actividades en PDF, imagen, Word o Excel para las horas sin docente."
+/>
+
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Fecha</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      [value]="selectedDate()"
+      (dateChange)="onDateChange($event.value)"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker" />
+    <mat-datepicker #picker />
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else {
+  <section class="panel">
+    <h2>Horas sin maestro</h2>
+    @if (!uncovered().length) {
+      <app-empty-state
+        title="Sin horas descubiertas"
+        message="No hay faltantes de profesores sin suplencia en esta fecha."
+        icon="verified"
+      />
+    } @else {
+      <div class="hours">
+        @for (hour of uncovered(); track hour.groupId + hour.periodId) {
+          <article class="hour" [class.ready]="hour.hasWork">
+            <div>
+              <strong>{{ hour.groupName }} · {{ hour.periodLabel }}</strong>
+              <p>{{ hour.subject }} · {{ hour.absentTeacherName }}</p>
+              <p>{{ hour.reason }}</p>
+            </div>
+            <button matButton="tonal" type="button" (click)="useHour(hour)" [disabled]="hour.hasWork">
+              {{ hour.hasWork ? 'Con trabajo' : 'Asignar trabajo' }}
+            </button>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="layout">
+    <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+      <h2>Cargar trabajo</h2>
+      <mat-form-field appearance="outline">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="title" />
+        @if (form.controls.title.hasError('required')) {
+          <mat-error>Escribe un título.</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Grupo</mat-label>
+        <mat-select formControlName="groupId">
+          @for (group of groups(); track group.id) {
+            <mat-option [value]="group.id">{{ group.name }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.groupId.hasError('required')) {
+          <mat-error>Selecciona un grupo.</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Hora</mat-label>
+        <mat-select formControlName="periodId">
+          @for (period of periods(); track period.id) {
+            <mat-option [value]="period.id">
+              {{ period.label }} · {{ period.startTime }}-{{ period.endTime }}
+            </mat-option>
+          }
+        </mat-select>
+        @if (form.controls.periodId.hasError('required')) {
+          <mat-error>Selecciona la hora.</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Docente ausente</mat-label>
+        <input matInput formControlName="absentTeacherName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Materia</mat-label>
+        <input matInput formControlName="subject" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Instrucciones</mat-label>
+        <textarea matInput rows="3" formControlName="instructions"></textarea>
+      </mat-form-field>
+
+      <label class="file">
+        <span>Archivo de trabajo</span>
+        <input type="file" [accept]="accept" (change)="onFile($event)" />
+        <small>
+          {{ fileName() || 'PDF, imagen, Word (.doc, .docx) o Excel (.xls, .xlsx).' }}
+        </small>
+        @if (fileType(); as type) {
+          <span class="chip" [attr.data-type]="type">{{ fileLabel(type) }}</span>
+        }
+      </label>
+
+      <button matButton="filled" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando...' : 'Guardar trabajo' }}
+      </button>
+    </form>
+
+    <div class="list">
+      <h2>Trabajos cargados</h2>
+      @if (!assignments().length) {
+        <app-empty-state title="Sin trabajos" message="Aún no hay archivos para esta fecha." icon="folder_open" />
+      } @else {
+        @for (item of assignments(); track item.id) {
+          <article class="work">
+            <mat-icon>{{ fileIcon(item.fileType) }}</mat-icon>
+            <div>
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.groupName }} · {{ item.periodLabel }}</p>
+              <p>{{ item.fileName }} · {{ fileLabel(item.fileType) }}</p>
+              <p>{{ item.createdAt | date: 'd MMM y, h:mm a' }}</p>
+            </div>
+            <button matButton="outlined" type="button" (click)="download(item)">Descargar</button>
+          </article>
+        }
+      }
+    </div>
+  </section>
+}

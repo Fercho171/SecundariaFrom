@@ -1,0 +1,40 @@
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.table-wrap {
+  overflow: auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: var(--school-shadow);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+th, td {
+  border-bottom: 1px solid #eef2f1;
+  padding: 0.75rem;
+  vertical-align: top;
+  text-align: left;
+}
+th {
+  background: #f4f8f7;
+  position: sticky;
+  top: 0;
+}
+.time {
+  min-width: 110px;
+  white-space: nowrap;
+}
+.time span, .slot span, .slot small {
+  display: block;
+  color: var(--school-muted);
+  font-size: 0.8rem;
+}
+.slot strong { display: block; margin-bottom: 0.15rem; }
+.empty { color: #9aa8a4; font-style: italic; }
+.loading { display: grid; place-items: center; min-height: 180px; }

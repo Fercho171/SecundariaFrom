@@ -1,0 +1,28 @@
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else if (group(); as current) {
+  <app-page-header [title]="current.name" [subtitle]="'Ciclo ' + current.schoolYear">
+    <a matButton="filled" [routerLink]="['/attendance', current.id]">Pasar lista</a>
+  </app-page-header>
+
+  <section class="facts">
+    <article><span>Grado</span><strong>{{ current.grade }}°</strong></article>
+    <article><span>Grupo</span><strong>{{ current.letter }}</strong></article>
+    <article><span>Alumnos</span><strong>{{ current.studentCount }}</strong></article>
+    <article><span>Docente asignado</span><strong>{{ current.teacherName }}</strong></article>
+  </section>
+
+  <section class="panel">
+    <h2>Alumnos del grupo</h2>
+    <ol>
+      @for (student of students(); track student.id) {
+        <li>
+          <a [routerLink]="['/students', student.id]">
+            <span>{{ student.studentNumber }}. {{ student.fullName }}</span>
+            <span class="pct">{{ student.attendancePercentage }}%</span>
+          </a>
+        </li>
+      }
+    </ol>
+  </section>
+}

@@ -1,0 +1,22 @@
+.filters { max-width: 280px; margin-bottom: 1rem; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.9rem;
+}
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: var(--school-shadow);
+}
+.top h3 { margin: 0 0 0.25rem; }
+.top span, .card p { color: var(--school-muted); }
+.card p { margin: 0.35rem 0 0; }
+.loading { display: grid; place-items: center; min-height: 160px; }

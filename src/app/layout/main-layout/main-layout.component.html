@@ -1,0 +1,18 @@
+<div class="shell">
+  <app-header (menuToggle)="toggle()" />
+  <mat-sidenav-container class="container">
+    <mat-sidenav
+      #sidenav
+      class="nav"
+      [mode]="isDesktop() ? 'side' : 'over'"
+      [opened]="isDesktop() ? opened() : false"
+    >
+      <app-sidebar />
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <main class="content">
+        <router-outlet />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

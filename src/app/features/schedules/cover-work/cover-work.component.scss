@@ -1,0 +1,73 @@
+.filters { max-width: 280px; margin-bottom: 1rem; }
+.panel, .form, .list {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.1rem;
+  box-shadow: var(--school-shadow);
+}
+.panel { margin-bottom: 1rem; }
+.panel h2, .form h2, .list h2 { margin: 0 0 0.9rem; font-size: 1.1rem; }
+.hours { display: flex; flex-direction: column; gap: 0.7rem; }
+.hour {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+  border: 1px solid #e4eeeb;
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  min-height: 72px;
+}
+.hour.ready { background: #eef8f5; }
+.hour p { margin: 0.15rem 0 0; color: var(--school-muted); }
+.hour button { min-height: 48px; }
+.layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) 1.1fr;
+  gap: 1rem;
+  align-items: start;
+}
+.form { display: flex; flex-direction: column; gap: 0.3rem; }
+.file {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.4rem 0 1rem;
+  font-weight: 600;
+}
+.file input {
+  min-height: 56px;
+  padding: 0.8rem;
+  border: 2px dashed #c5d5d1;
+  border-radius: 14px;
+  background: #f7fbfa;
+}
+.file small { font-weight: 400; color: var(--school-muted); }
+.chip {
+  align-self: start;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #e8f4f2;
+  color: var(--school-teal);
+}
+.chip[data-type='PDF'] { background: #fdecea; color: #c62828; }
+.chip[data-type='WORD'] { background: #e8f1fb; color: #1565c0; }
+.chip[data-type='EXCEL'] { background: #e8f5e9; color: #2e7d32; }
+button[type='submit'] { min-height: 56px; }
+.work {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.8rem;
+  align-items: center;
+  border-bottom: 1px solid #eef2f1;
+  padding: 0.8rem 0;
+}
+.work p { margin: 0.15rem 0 0; color: var(--school-muted); font-size: 0.9rem; }
+.work button { min-height: 48px; }
+.loading { display: grid; place-items: center; min-height: 180px; }
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  .hour { flex-direction: column; align-items: stretch; }
+}

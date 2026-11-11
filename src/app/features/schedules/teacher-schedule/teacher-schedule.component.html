@@ -1,0 +1,64 @@
+<app-page-header
+  title="Horario por profesores"
+  subtitle="Revisa la carga académica de cada docente."
+/>
+
+@if (loading()) {
+  <div class="loading"><mat-spinner diameter="42" /></div>
+} @else {
+  <div class="filters">
+    <mat-form-field appearance="outline">
+      <mat-label>Docente</mat-label>
+      <mat-select [value]="selectedTeacherId()" (valueChange)="onTeacherChange($event)">
+        @for (item of schedules(); track item.teacherId) {
+          <mat-option [value]="item.teacherId">{{ item.teacherName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (current(); as teacher) {
+    <section class="summary">
+      <article><span>Docente</span><strong>{{ teacher.teacherName }}</strong></article>
+      <article><span>Materia</span><strong>{{ teacher.subject }}</strong></article>
+      <article><span>Grupos</span><strong>{{ teacher.groupNames.join(', ') }}</strong></article>
+      <article><span>Horas semanales</span><strong>{{ teacher.weeklyHours }} h</strong></article>
+    </section>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Hora</th>
+            @for (day of weekdays; track day.value) {
+              <th>{{ day.short }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (period of periods(); track period.id) {
+            <tr>
+              <td class="time">
+                <strong>{{ period.label }}</strong>
+                <span>{{ period.startTime }}-{{ period.endTime }}</span>
+              </td>
+              @for (day of weekdays; track day.value) {
+                <td>
+                  @if (slotFor(day.value, period.id); as slot) {
+                    <div class="slot">
+                      <strong>{{ slot.groupName }}</strong>
+                      <span>{{ slot.subject }}</span>
+                      <small>{{ slot.classroom }}</small>
+                    </div>
+                  } @else {
+                    <span class="empty">—</span>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}

@@ -1,0 +1,370 @@
+{
+  "info": {
+    "name": "Asistencia Escolar - Backend",
+    "description": "Colección para probar el backend Spring Boot + PostgreSQL de la app Angular \"Secundaria\". Ejecuta primero \"Auth > Login\": el token se guarda automáticamente en la variable de colección {{token}} y el resto de las peticiones ya lo usan.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" },
+    { "key": "groupId", "value": "g-2A" },
+    { "key": "studentId", "value": "s-1" },
+    { "key": "teacherId", "value": "t4" },
+    { "key": "attendanceId", "value": "" },
+    { "key": "coverWorkId", "value": "work-1" },
+    { "key": "today", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('today')) {",
+          "  pm.collectionVariables.set('today', new Date().toISOString().slice(0, 10));",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": { "type": "noauth" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"docente\",\n  \"password\": \"Docente123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login exitoso (200)', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('Devuelve token', () => pm.expect(body.token).to.be.a('string'));",
+                  "if (body.token) { pm.collectionVariables.set('token', body.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login (credenciales inválidas)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "auth": { "type": "noauth" },
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"docente\",\n  \"password\": \"incorrecta\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Obtener tablero",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/dashboard", "host": ["{{baseUrl}}"], "path": ["dashboard"] } }
+        },
+        {
+          "name": "Alumnos en seguimiento (alerts)",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/alerts", "host": ["{{baseUrl}}"], "path": ["alerts"] } }
+        }
+      ]
+    },
+    {
+      "name": "Grupos",
+      "item": [
+        {
+          "name": "Listar grupos",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/groups", "host": ["{{baseUrl}}"], "path": ["groups"] } }
+        },
+        {
+          "name": "Obtener grupo por id",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/groups/{{groupId}}", "host": ["{{baseUrl}}"], "path": ["groups", "{{groupId}}"] } }
+        },
+        {
+          "name": "Alumnos del grupo",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/groups/{{groupId}}/students", "host": ["{{baseUrl}}"], "path": ["groups", "{{groupId}}", "students"] } }
+        }
+      ]
+    },
+    {
+      "name": "Alumnos",
+      "item": [
+        {
+          "name": "Buscar alumnos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/students?search=&groupId={{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["students"],
+              "query": [{ "key": "search", "value": "" }, { "key": "groupId", "value": "{{groupId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Perfil de alumno",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/students/{{studentId}}", "host": ["{{baseUrl}}"], "path": ["students", "{{studentId}}"] } }
+        }
+      ]
+    },
+    {
+      "name": "Asistencia",
+      "item": [
+        {
+          "name": "Pasar lista (guardar asistencia del grupo)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{groupId}}\",\n  \"date\": \"{{today}}\",\n  \"records\": [\n    { \"studentId\": \"s-29\", \"status\": \"PRESENT\" },\n    { \"studentId\": \"s-30\", \"status\": \"ABSENT\" }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/attendance", "host": ["{{baseUrl}}"], "path": ["attendance"] },
+            "description": "Nota: 'records' debe incluir EXACTAMENTE un registro por cada alumno del grupo (28 en los datos semilla) o el backend responde 400. Este ejemplo trae solo 2 para ilustrar el formato; ajusta la lista completa antes de enviarla."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const rows = pm.response.json();",
+                  "  if (Array.isArray(rows) && rows.length) { pm.collectionVariables.set('attendanceId', rows[0].id); }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar asistencia (filtros)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/attendance?groupId={{groupId}}&from={{today}}&to={{today}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["attendance"],
+              "query": [
+                { "key": "groupId", "value": "{{groupId}}" },
+                { "key": "from", "value": "{{today}}" },
+                { "key": "to", "value": "{{today}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Asistencia por alumno",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/attendance/student/{{studentId}}", "host": ["{{baseUrl}}"], "path": ["attendance", "student", "{{studentId}}"] } }
+        },
+        {
+          "name": "Asistencia por grupo y fecha",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/attendance/group/{{groupId}}?date={{today}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["attendance", "group", "{{groupId}}"],
+              "query": [{ "key": "date", "value": "{{today}}" }]
+            }
+          }
+        },
+        {
+          "name": "Corregir un registro de asistencia",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"LATE\"\n}" },
+            "url": { "raw": "{{baseUrl}}/attendance/{{attendanceId}}", "host": ["{{baseUrl}}"], "path": ["attendance", "{{attendanceId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Justificaciones",
+      "item": [
+        {
+          "name": "Listar justificaciones",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/justifications", "host": ["{{baseUrl}}"], "path": ["justifications"] } }
+        },
+        {
+          "name": "Crear justificación (multipart)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "studentId", "value": "{{studentId}}", "type": "text" },
+                { "key": "date", "value": "{{today}}", "type": "text" },
+                { "key": "reason", "value": "ILLNESS", "type": "text" },
+                { "key": "notes", "value": "Creado desde Postman", "type": "text" },
+                { "key": "file", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/justifications", "host": ["{{baseUrl}}"], "path": ["justifications"] },
+            "description": "El campo 'file' es opcional; puedes dejarlo vacío o adjuntar un PDF/imagen."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Docentes",
+      "item": [
+        { "name": "Listar docentes", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/teachers", "host": ["{{baseUrl}}"], "path": ["teachers"] } } }
+      ]
+    },
+    {
+      "name": "Horarios",
+      "item": [
+        {
+          "name": "Periodos de clase",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/schedules/periods", "host": ["{{baseUrl}}"], "path": ["schedules", "periods"] } }
+        },
+        {
+          "name": "Horario de clases (por grupo/día)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/schedules/classes?groupId={{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules", "classes"],
+              "query": [{ "key": "weekday", "value": "MONDAY", "disabled": true }, { "key": "groupId", "value": "{{groupId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Horario de todos los docentes",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/schedules/teachers", "host": ["{{baseUrl}}"], "path": ["schedules", "teachers"] } }
+        },
+        {
+          "name": "Horario de un docente",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/schedules/teachers/{{teacherId}}", "host": ["{{baseUrl}}"], "path": ["schedules", "teachers", "{{teacherId}}"] } }
+        },
+        {
+          "name": "Faltantes de profesores por día",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/schedules/absences?date={{today}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules", "absences"],
+              "query": [{ "key": "date", "value": "{{today}}" }]
+            }
+          }
+        },
+        {
+          "name": "Horas de trabajo docentes",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/schedules/work-hours", "host": ["{{baseUrl}}"], "path": ["schedules", "work-hours"] } }
+        },
+        {
+          "name": "Horas sin cubrir",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/schedules/uncovered-hours?date={{today}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedules", "uncovered-hours"],
+              "query": [{ "key": "date", "value": "{{today}}" }]
+            }
+          }
+        },
+        {
+          "name": "Listar trabajos de cobertura",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/schedules/cover-work", "host": ["{{baseUrl}}"], "path": ["schedules", "cover-work"] } }
+        },
+        {
+          "name": "Subir trabajo de cobertura (multipart)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "Guía de repaso", "type": "text" },
+                { "key": "date", "value": "{{today}}", "type": "text" },
+                { "key": "groupId", "value": "{{groupId}}", "type": "text" },
+                { "key": "periodId", "value": "4", "type": "text" },
+                { "key": "absentTeacherName", "value": "Fernando Solorio Ortega", "type": "text" },
+                { "key": "subject", "value": "Matemáticas", "type": "text" },
+                { "key": "instructions", "value": "Resolver los ejercicios 1 a 10.", "type": "text" },
+                { "key": "file", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/schedules/cover-work", "host": ["{{baseUrl}}"], "path": ["schedules", "cover-work"] }
+          }
+        },
+        {
+          "name": "Descargar archivo de cobertura",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/schedules/cover-work/{{coverWorkId}}/file", "host": ["{{baseUrl}}"], "path": ["schedules", "cover-work", "{{coverWorkId}}", "file"] } }
+        }
+      ]
+    },
+    {
+      "name": "Reportes",
+      "item": [
+        {
+          "name": "Reporte de asistencia (JSON)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reports/attendance?type=DAILY",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "attendance"],
+              "query": [{ "key": "type", "value": "DAILY" }]
+            }
+          }
+        },
+        {
+          "name": "Reporte de asistencia (CSV)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reports/attendance/excel?type=BY_GROUP&groupId={{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "attendance", "excel"],
+              "query": [{ "key": "type", "value": "BY_GROUP" }, { "key": "groupId", "value": "{{groupId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Reporte de asistencia (PDF)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/reports/attendance/pdf?type=TOP_ABSENCES",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "attendance", "pdf"],
+              "query": [{ "key": "type", "value": "TOP_ABSENCES" }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
